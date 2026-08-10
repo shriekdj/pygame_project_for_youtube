@@ -16,6 +16,10 @@ dt = 0 # frames speed
 player_pos = pygame.Vector2(
     (screen.get_width() / 2,screen.get_height() / 2)
 ) # center of the screen point type in a tuple
+player_dir = pygame.Vector2(
+    0,0
+) # no tuple because it's stores direction
+
 player_speed = 300 # pixels per seconds
 
 while running:
@@ -40,14 +44,22 @@ while running:
     # normal keyboard click events
     keys = pygame.key.get_pressed()
 
+    # reset the direction
+    player_dir.x, player_dir.y = 0,0
+
     if keys[pygame.K_LEFT]:
-        player_pos.x -= player_speed * dt
+        player_dir.x = -1
     if keys[pygame.K_RIGHT]:
-        player_pos.x += player_speed * dt
+        player_dir.x = 1
     if keys[pygame.K_UP]:
-        player_pos.y -= player_speed * dt
+        player_dir.y = -1
     if keys[pygame.K_DOWN]:
-        player_pos.y += player_speed * dt
+        player_dir.y = 1
+
+    if player_dir.magnitude() > 0:
+        player_dir = player_dir.normalize() # unitless
+
+    player_pos += player_speed * player_dir * dt
 
     if keys[pygame.K_ESCAPE]:
         running = False
