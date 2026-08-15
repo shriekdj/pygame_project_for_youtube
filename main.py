@@ -1,5 +1,5 @@
 import pygame
-
+from os import path, getcwd
 pygame.init()
 
 screen = pygame.display.set_mode(
@@ -56,7 +56,7 @@ while running:
     if keys[pygame.K_DOWN]:
         player_dir.y = 1
 
-    if player_dir.magnitude() > 0:
+    if player_dir.magnitude_squared() > 0:
         player_dir = player_dir.normalize() # unitless
 
     player_pos += player_speed * player_dir * dt
