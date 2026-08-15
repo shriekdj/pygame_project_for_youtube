@@ -1,5 +1,6 @@
 import pygame
-from os import path, getcwd
+
+
 pygame.init()
 
 screen = pygame.display.set_mode(
