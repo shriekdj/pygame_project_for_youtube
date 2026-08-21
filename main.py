@@ -6,6 +6,8 @@ pygame.init()
 screen = pygame.display.set_mode(
     (1280, 720) # 720p Screen
 )
+screen_rect = screen.get_rect()
+
 clock = pygame.time.Clock()
 
 # global variables
@@ -21,7 +23,20 @@ player_dir = pygame.Vector2(
     0,0
 ) # no tuple because it's stores direction
 
+player_radius = 90
 player_speed = 300 # pixels per seconds
+
+player_surface = pygame.Surface(
+    (player_radius*2, player_radius*2), # 180x180
+    pygame.SRCALPHA # surface will be transparent
+)
+pygame.draw.circle(
+    player_surface, # background
+    'red',
+    (player_radius, player_radius), # center of surface
+    radius=player_radius # pixels
+)
+player_rect = player_surface.get_rect() # reference
 
 while running:
     # Let's Listen Global Window Events
@@ -34,12 +49,9 @@ while running:
 
     # Game Code Start
 
-    ## draw player
-    pygame.draw.circle(
-        screen, # background
-        'red',
-        player_pos,
-        radius=90 # pixels
+    ## draw player_surface on screen like sticky notes
+    screen.blit(
+        player_surface, player_rect
     )
 
     # normal keyboard click events
@@ -61,6 +73,21 @@ while running:
         player_dir = player_dir.normalize() # unitless
 
     player_pos += player_speed * player_dir * dt
+
+    player_rect.center = (
+        player_pos.x,
+        player_pos.y
+    ) # change position of center of rect
+
+    # does not allow to go outside of boundary rect passed
+    player_rect.clamp_ip(
+        screen_rect
+    )
+
+    player_pos.update(
+        player_rect.center
+    )
+
 
     if keys[pygame.K_ESCAPE]:
         running = False
